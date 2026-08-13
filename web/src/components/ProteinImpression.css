@@ -1,0 +1,41 @@
+.impression {
+  display: grid;
+  gap: 16px;
+}
+
+.protein-text {
+  margin: 0;
+  font-size: 1.12rem;
+  letter-spacing: 0.12em;
+  word-break: break-all;
+}
+
+.protein-letter {
+  font-weight: 700;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+  flex: 0 0 auto;
+  box-shadow: 0 0 0 1px rgba(154, 240, 192, 0.2);
+}

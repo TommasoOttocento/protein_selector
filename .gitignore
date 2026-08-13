@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.local
+.DS_Store
+Thumbs.db
+
+enviroment_python_vscode.venv/
+.venv/
+venv/
+
+web/node_modules/
+web/dist/
