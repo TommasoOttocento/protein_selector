@@ -3,6 +3,24 @@
   gap: 16px;
 }
 
+.workspace {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .aa-dock {
+    width: 100%;
+    max-height: 240px;
+  }
+}
+
 .protein-text {
   margin: 0;
   font-size: 1.12rem;
@@ -10,8 +28,38 @@
   word-break: break-all;
 }
 
+.protein-text.muted {
+  letter-spacing: 0;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
 .protein-letter {
   font-weight: 700;
+}
+
+.protein-letter.is-selected {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.protein-letter.is-preview {
+  outline: 1px dashed var(--accent);
+  outline-offset: 2px;
+  opacity: 0.8;
+}
+
+.export-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.export-bar button:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
 }
 
 .legend {

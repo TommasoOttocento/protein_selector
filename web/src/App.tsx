@@ -18,6 +18,7 @@ export default function App() {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<TranslationResult[] | null>(null);
+  const [manualProtein, setManualProtein] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const records = useMemo(() => parseFasta(text), [text]);
@@ -78,6 +79,7 @@ export default function App() {
     setText("");
     setFileName(null);
     setResults(null);
+    setManualProtein("");
     setError(null);
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -88,6 +90,7 @@ export default function App() {
     <main className="page">
       <p className="eyebrow">Sequence tools</p>
       <h1>Nucleotide translator</h1>
+      <h3> created by Tommaso Ottocento</h3>
       <p className="lede">
         Drop a FASTA file or paste a nucleotide string. Choose DNA or RNA, then translate
         to amino acids with the standard genetic code.
@@ -164,7 +167,7 @@ export default function App() {
       </section>
 
       {results ? (
-        <section className="results" style={{ marginTop: 20 }}>
+        <section className="results">
           {results.map((result, index) => (
             <article className="result" key={`${result.header}-${index}`}>
               <h2>{result.header}</h2>
@@ -174,12 +177,38 @@ export default function App() {
               {result.error ? (
                 <p className="error">{result.error}</p>
               ) : (
-                <ProteinImpression protein={result.protein} />
+                <ProteinImpression
+                  header={result.header}
+                  kind={kind}
+                  protein={result.protein}
+                  onProteinChange={(protein) => {
+                    setResults((current) =>
+                      current
+                        ? current.map((item, itemIndex) =>
+                            itemIndex === index ? { ...item, protein } : item,
+                          )
+                        : current,
+                    );
+                  }}
+                />
               )}
             </article>
           ))}
         </section>
-      ) : null}
+      ) : (
+        <section className="results">
+          <article className="result">
+            <h2>Chain builder</h2>
+            <p className="meta">Drag amino acids from the dock, or translate a sequence first</p>
+            <ProteinImpression
+              header="chain"
+              kind={kind}
+              protein={manualProtein}
+              onProteinChange={setManualProtein}
+            />
+          </article>
+        </section>
+      )}
     </main>
   );
 }

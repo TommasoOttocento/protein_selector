@@ -107,3 +107,51 @@ export function translate(
 
   return aminoAcids.join("");
 }
+
+const PREFERRED_CODONS: Record<string, string> = {
+  A: "GCU",
+  R: "CGU",
+  N: "AAU",
+  D: "GAU",
+  C: "UGU",
+  E: "GAA",
+  Q: "CAA",
+  G: "GGU",
+  H: "CAU",
+  I: "AUU",
+  L: "CUG",
+  K: "AAA",
+  M: "AUG",
+  F: "UUU",
+  P: "CCU",
+  S: "UCU",
+  T: "ACU",
+  W: "UGG",
+  Y: "UAU",
+  V: "GUU",
+};
+
+export function reverseTranslate(
+  protein: string,
+  kind: SequenceKind,
+  addStop = true,
+): string {
+  const codons = protein
+    .split("")
+    .filter(Boolean)
+    .map((code) => {
+      const codon = PREFERRED_CODONS[code];
+      if (!codon) {
+        throw new Error(`Cannot reverse-translate residue: ${code}`);
+      }
+      return codon;
+    });
+
+  if (addStop && protein.length > 0) {
+    codons.push("UAA");
+  }
+
+  const rna = codons.join("");
+  return kind === "DNA" ? rna.replaceAll("U", "T") : rna;
+}
+
