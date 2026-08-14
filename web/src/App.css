@@ -166,9 +166,30 @@ textarea:focus {
   border: 1px solid rgba(154, 240, 192, 0.4);
 }
 
-.ghost:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
+.actions button:disabled,
+.ghost:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+
+.seq-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.seq-panel-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.complement-panel {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(154, 240, 192, 0.04);
 }
 
 .error {

@@ -1,6 +1,8 @@
 import { useMemo, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import ProteinImpression from "./components/ProteinImpression";
+import SequenceHighlight from "./components/SequenceHighlight";
 import { parseFasta, type FastaRecord } from "./lib/fasta";
+import { reverseComplementText } from "./lib/nucleotides";
 import { translate, type SequenceKind } from "./lib/translate";
 import "./App.css";
 
@@ -19,9 +21,14 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<TranslationResult[] | null>(null);
   const [manualProtein, setManualProtein] = useState("");
+  const [showComplement, setShowComplement] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const records = useMemo(() => parseFasta(text), [text]);
+  const complementText = useMemo(
+    () => (showComplement ? reverseComplementText(text, kind) : ""),
+    [kind, showComplement, text],
+  );
 
   async function loadFile(file: File) {
     const content = await file.text();
@@ -80,6 +87,7 @@ export default function App() {
     setFileName(null);
     setResults(null);
     setManualProtein("");
+    setShowComplement(false);
     setError(null);
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -154,14 +162,62 @@ export default function App() {
           }
         />
 
+        <div className="seq-panel">
+          <div className="seq-panel-label">Start / stop preview</div>
+          <SequenceHighlight text={text} />
+          <ul className="codon-legend">
+            <li>
+              <span>
+                <span className="codon-swatch start" />
+                Start {kind === "DNA" ? "ATG" : "AUG"}
+              </span>
+            </li>
+            <li>
+              <span>
+                <span className="codon-swatch stop" />
+                Stop {kind === "DNA" ? "TAA TAG TGA" : "UAA UAG UGA"}
+              </span>
+            </li>
+          </ul>
+        </div>
+
         <div className="actions">
           <button type="button" className="primary" onClick={runTranslation}>
             Translate
+          </button>
+          <button
+            type="button"
+            className="ghost"
+            onClick={() => setShowComplement((current) => !current)}
+            disabled={!text.trim()}
+          >
+            {showComplement ? "Hide complement" : "Preview complement"}
           </button>
           <button type="button" className="ghost" onClick={reset}>
             Clear
           </button>
         </div>
+
+        {showComplement ? (
+          <div className="seq-panel complement-panel">
+            <div className="seq-panel-label">Reverse complement ({kind})</div>
+            <SequenceHighlight
+              text={complementText}
+              emptyLabel="Add a nucleotide sequence to preview the complement strand."
+            />
+            <button
+              type="button"
+              className="ghost"
+              disabled={!complementText}
+              onClick={() => {
+                setText(complementText);
+                setResults(null);
+              }}
+            >
+              Use complement as input
+            </button>
+          </div>
+        ) : null}
 
         {error ? <p className="error">{error}</p> : null}
       </section>
